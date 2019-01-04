@@ -179,5 +179,15 @@ router.post('/postagem/edit', (req, res) => {
     })
 })
 
+router.get('/postagem/deletar/:id', (req, res) => {
+    Postagem.remove({_id: req.params.id}).then(() => {
+        req.flash("success_msg", "Sucesso ao deletar postagem.")
+        res.redirect('/admin/postagens')
+    }).catch((erro) => {
+        req.flash("error_msg", "Houve um erro ao deletar postagem. Erro: " + erro)
+        res.redirect('/admin/postagens')
+    })
+})
+
 
 module.exports = router
