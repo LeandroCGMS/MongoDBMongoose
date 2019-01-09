@@ -7,7 +7,7 @@ require('../models/Usuario')
 const Usuario = mongoose.model("usuarios")
 
 module.exports = (passport) => {
-    passport.use(new localStrategy({usernameField: 'email'}, (email, senha, done) => {
+    passport.use(new localStrategy({usernameField: 'email', passwordField: 'senha'}, (email, senha, done) => {
         Usuario.findOne({email: email}).then((usuario) => {
             if(!usuario){
                 return done(null, false, {message: "Esta conta não existe."})
@@ -15,7 +15,7 @@ module.exports = (passport) => {
 
             bcrypt.compare(senha, usuario.senha, (erro, batem) => {
                 if(batem){
-                    return done(null, user)
+                    return done(null, usuario)
                 } else {
                     return done(null, false, {message: "Na comparação de senha, elas não batem."})
                 }
@@ -28,7 +28,7 @@ module.exports = (passport) => {
     })
 
     passport.deserializeUser((id, done) => {
-        User.findById(id, (erro, usuario) => {
+        Usuario.findById(id, (erro, usuario) => {
             done(erro, usuario)
         })
     })
